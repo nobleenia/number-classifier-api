@@ -30,7 +30,7 @@ def classify_number(request):
     number_param = request.GET.get('number')
 
     # Strict input validation
-    if number_param is None or not number_param.strip().lstrip('-').isdigit():
+    if not number_param or not number_param.lstrip("-").isdigit():
         return JsonResponse({"number": "alphabet", "error": True}, status=400)
 
     # Convert to integer
