@@ -29,9 +29,9 @@ def classify_number(request):
     """API to classify a number and return its properties."""
     number_param = request.GET.get('number')
 
-    # Validate input: Ensure it's a valid integer
+    # Strict input validation
     if number_param is None or not number_param.strip().lstrip('-').isdigit():
-        return JsonResponse({"number": number_param, "error": True}, status=400)
+        return JsonResponse({"number": "alphabet", "error": True}, status=400)
 
     # Convert to integer
     number = int(number_param)
