@@ -1,10 +1,6 @@
 from django.shortcuts import render
-
-# Create your views here.
-
 import requests
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 
 def home(request):
     """Home endpoint showing a welcome message."""
@@ -25,25 +21,23 @@ def is_perfect(n):
 
 def is_armstrong(n):
     """Check if a number is an Armstrong number."""
-    num_str = str(n)
+    num_str = str(abs(n))  # Handle negative numbers gracefully
     power = len(num_str)
-    return sum(int(digit) ** power for digit in num_str) == n
+    return sum(int(digit) ** power for digit in num_str) == abs(n)
 
 def classify_number(request):
     """API to classify a number and return its properties."""
     number_param = request.GET.get('number')
 
-    # Validate input
-    if number_param is None or not number_param.strip():
-        return JsonResponse({"number": None, "error": True}, status=400)
-    
-    try:
-        number = int(number_param)
-    except (TypeError, ValueError):
+    # Validate input: Ensure it's a valid integer
+    if number_param is None or not number_param.strip().lstrip('-').isdigit():
         return JsonResponse({"number": number_param, "error": True}, status=400)
 
+    # Convert to integer
+    number = int(number_param)
+
     # Determine properties
-    digit_sum = sum(int(digit) for digit in str(number))
+    digit_sum = sum(int(digit) for digit in str(abs(number)))  # abs() for negatives
     prime_status = is_prime(number)
     perfect_status = is_perfect(number)
     armstrong_status = is_armstrong(number)
@@ -56,7 +50,7 @@ def classify_number(request):
 
     # Fetch fun fact from Numbers API
     try:
-        response = requests.get(f"http://numbersapi.com/{number}/math?json, timeout=5")
+        response = requests.get(f"http://numbersapi.com/{number}/math?json", timeout=5)
         fun_fact = response.json().get("text", "No fact available.")
     except requests.RequestException:
         fun_fact = "Could not fetch a fun fact."
