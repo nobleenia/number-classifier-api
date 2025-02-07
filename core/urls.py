@@ -11,5 +11,5 @@ def redirect_to_correct_url(request):
 
 urlpatterns = [
     re_path(r'^$', redirect_to_correct_url, name="redirect_to_correct_url"),
-    path('api/classify-number/', classify_number, name="classify_number"),
+    path('api/classify-number', classify_number, name="classify_number"),
 ]
