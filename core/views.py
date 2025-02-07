@@ -34,6 +34,9 @@ def classify_number(request):
     number_param = request.GET.get('number')
 
     # Validate input
+    if number_param is None or not number_param.strip():
+        return JsonResponse({"number": None, "error": True}, status=400)
+    
     try:
         number = int(number_param)
     except (TypeError, ValueError):
@@ -53,7 +56,7 @@ def classify_number(request):
 
     # Fetch fun fact from Numbers API
     try:
-        response = requests.get(f"http://numbersapi.com/{number}/math?json")
+        response = requests.get(f"http://numbersapi.com/{number}/math?json, timeout=5")
         fun_fact = response.json().get("text", "No fact available.")
     except requests.RequestException:
         fun_fact = "Could not fetch a fun fact."
