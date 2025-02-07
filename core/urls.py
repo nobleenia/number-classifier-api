@@ -6,7 +6,7 @@ def redirect_to_correct_url(request):
     """Redirects invalid root requests to the correct API endpoint."""
     number_param = request.GET.get("number")
     if number_param:
-        return redirect(f"/api/classify-number/?number={number_param}")
+        return redirect(f"/api/classify-number?number={number_param}")
     return home(request)
 
 urlpatterns = [
